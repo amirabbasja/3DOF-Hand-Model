@@ -171,5 +171,5 @@ function [dydt, params] = dynamicEqn_3DOF_AbsorberOnElbow(t,Y,params)
         if th3 == 0; kt3 = 0; else ;kt3 = Torque_RUD / th3; end
     end
     
-
+    params.md = params.md/params.g; % Because we pass params back to ode15s solver, we have to change md to kg so we avoid accumulation of gravity multipliers in absorber mass
 end
