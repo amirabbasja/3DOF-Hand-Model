@@ -51,93 +51,90 @@ function [dydt, params] = dynamicEqn_2DOF_DEAD_MASS(t,Y,params)
     end
     
     function [kt1,kt2,kt3] = jointStiffness(th2, th3, th1Dir)
-    %     % Part1: This part gets the stifness of the elbow with respect to angle
-    %     
-    %     % Args:
-    %     % th1_dir : float: The direction of elbows movemebt (Flexion or Extension)
-    %     
-    %     % Returns:
-    %     % The torque antagonist torque generated in elbow in (N.m)
-    %     
-    %     th1Dir = sign(th1Dir);
-    % 
-    %     if 0 <= th1Dir
-    %         kt1 = 0.0516*180/pi;
-    %     else
-    %         kt1 = 0.0516*180/pi;
-    %     end
-    % 
-    %         % Part2: This part gets the stifness of the wrist with respect to two angles,
-    %     % 1- FE (Flexion Extension)(th2) and 2- RUD (Radial Ulnar  Deviation)(th3). 
-    %     % The reference for the Data in this function is : DOI 10.1152/jn.01014.2011
-    %     % In this paper the stifness of the wrist for small angles (-15 to +15
-    %     % degrees) has been obtained. with multiiplying the wrist stiffness to
-    %     % the wrist angle, we can get the antagonist torque in the wrist.
-    % 
-    %     % We have 24 experimental datas, with an elliptic regression we have
-    %     % acquired the formulation the ellipce that fits onto the experimental data.
-    %     % The ellipse's formulation is as follows:
-    %     % 0.4352x^2 + 0.2482xy + 0.2231y^2 + -0.1344x + -0.2594y = 1
-    %     % To get the python code for fitting the ellipse, please see fitToEllipse.ipynb
-    % 
-    %     % To get the palm's we use the formula theta = atan(tan(alpha) / tan(beta)) 
-    %     % which alpha is for FE and beta is for RUD.
-    % 
-    %     % Args:
-    %     % FE: float: the flexion extension angle (alpha) in radians
-    %     % RUD: float: the radial ulnar deviation angle (beta) in radians
-    % 
-    %     % Returns: 
-    %     % k: float: The stiffness of the joint in the palms plain of motion (N.m/rad)
-    % 
-    %     alpha = th2; % FE
-    %     beta = th3; % RUD
-    % 
-    %     theta = atan2(tan(alpha),tan(beta));
-    % 
-    %     % Here we have the angle theta, now we have to see where the line
-    %     % passing from origin, and having the ngle theta with x axis,
-    %     % intersects with regrtessed ellipse.
-    % 
-    %     R = tan(theta); % Hence x = R * y (refere to the chart)
-    % 
-    %     % The equation is as follows. we have to solve it: 
-    %     % eqn = 0.4352*(R*y)^2 + 0.2482*(R*y)*y + 0.2231*y^2 + -0.1344*R*y + -0.2594*y == 1;
-    %     coeff1 = 0.4352*R^2 +  0.2482*R + 0.2231; % Coefficient for y^2
-    %     coeff2 = -0.1344*R -0.2594; % Coefficient for y^1
-    %     coeff3 = -1; % Coefficient for y^0
-    % 
-    %     sol = roots([coeff1, coeff2, coeff3]);
-    % 
-    %     % We always have two solutions. if beta is positive, then we take the
-    %     % positive answer as solution. if not, the negative solution. Also note
-    %     % that always, one solution is positive and another negative.
-    %     if 0 <= beta
-    %         y = max(real(sol));
-    %     else
-    %         y = min(real(sol));
-    %     end
-    % 
-    %     if alpha == 0  && beta == 0
-    %         k2 = 0;
-    %         %fprintf("k=%f\n", k);
-    %     else
-    %         x = R * y;
-    %         k2 = sqrt(x^2+y^2);
-    %         %fprintf("alpha =%f \nbeta=%f \ntheta=%f   \nx=%f   \ny=%f  \nk=%f\n------------\n",alpha,beta, theta*180/pi, x, y, k);
-    %     end
-    %     
-    %     phi = atan(sqrt(tan(alpha)^2+tan(beta)^2));
-    %     %fprintf("alpha =%f \nbeta=%f \ntheta=%f   \nphi=%f   \nk=%f\n------------\n",alpha,beta, theta*180/pi,phi*180/pi, k);
-    %     Torque = k2 * phi;
-    %     Torque_FE  = Torque * sin(theta);
-    %     Torque_RUD = Torque * cos(theta);
-    %     if th2 == 0; kt2 = 0; else ;kt2 = Torque_FE / th2; end
-    %     if th3 == 0; kt3 = 0; else ;kt3 = Torque_RUD / th3; end
+        % Part1: This part gets the stifness of the elbow with respect to angle
         
-        kt1 = 2.9564;
-        kt2 = 1.1181;
-        kt3 = 0;
+        % Args:
+        % th1_dir : float: The direction of elbows movemebt (Flexion or Extension)
+        
+        % Returns:
+        % The torque antagonist torque generated in elbow in (N.m)
+        
+        th1Dir = sign(th1Dir);
+    
+        if 0 <= th1Dir
+            kt1 = 0.0516*180/pi;
+        else
+            kt1 = 0.0516*180/pi;
+        end
+    
+            % Part2: This part gets the stifness of the wrist with respect to two angles,
+        % 1- FE (Flexion Extension)(th2) and 2- RUD (Radial Ulnar  Deviation)(th3). 
+        % The reference for the Data in this function is : DOI 10.1152/jn.01014.2011
+        % In this paper the stifness of the wrist for small angles (-15 to +15
+        % degrees) has been obtained. with multiiplying the wrist stiffness to
+        % the wrist angle, we can get the antagonist torque in the wrist.
+    
+        % We have 24 experimental datas, with an elliptic regression we have
+        % acquired the formulation the ellipce that fits onto the experimental data.
+        % The ellipse's formulation is as follows:
+        % 0.4352x^2 + 0.2482xy + 0.2231y^2 + -0.1344x + -0.2594y = 1
+        % To get the python code for fitting the ellipse, please see fitToEllipse.ipynb
+    
+        % To get the palm's we use the formula theta = atan(tan(alpha) / tan(beta)) 
+        % which alpha is for FE and beta is for RUD.
+    
+        % Args:
+        % FE: float: the flexion extension angle (alpha) in radians
+        % RUD: float: the radial ulnar deviation angle (beta) in radians
+    
+        % Returns: 
+        % k: float: The stiffness of the joint in the palms plain of motion (N.m/rad)
+    
+        alpha = th2; % FE
+        beta = th3; % RUD
+    
+        theta = atan2(tan(alpha),tan(beta));
+    
+        % Here we have the angle theta, now we have to see where the line
+        % passing from origin, and having the ngle theta with x axis,
+        % intersects with regrtessed ellipse.
+    
+        R = tan(theta); % Hence x = R * y (refere to the chart)
+    
+        % The equation is as follows. we have to solve it: 
+        % eqn = 0.4352*(R*y)^2 + 0.2482*(R*y)*y + 0.2231*y^2 + -0.1344*R*y + -0.2594*y == 1;
+        coeff1 = 0.4352*R^2 +  0.2482*R + 0.2231; % Coefficient for y^2
+        coeff2 = -0.1344*R -0.2594; % Coefficient for y^1
+        coeff3 = -1; % Coefficient for y^0
+    
+        sol = roots([coeff1, coeff2, coeff3]);
+    
+        % We always have two solutions. if beta is positive, then we take the
+        % positive answer as solution. if not, the negative solution. Also note
+        % that always, one solution is positive and another negative.
+        if 0 <= beta
+            y = max(real(sol));
+        else
+            y = min(real(sol));
+        end
+    
+        if alpha == 0  && beta == 0
+            k2 = 0;
+            %fprintf("k=%f\n", k);
+        else
+            x = R * y;
+            k2 = sqrt(x^2+y^2);
+            %fprintf("alpha =%f \nbeta=%f \ntheta=%f   \nx=%f   \ny=%f  \nk=%f\n------------\n",alpha,beta, theta*180/pi, x, y, k);
+        end
+        
+        phi = atan(sqrt(tan(alpha)^2+tan(beta)^2));
+        %fprintf("alpha =%f \nbeta=%f \ntheta=%f   \nphi=%f   \nk=%f\n------------\n",alpha,beta, theta*180/pi,phi*180/pi, k);
+        Torque = k2 * phi;
+        Torque_FE  = Torque * sin(theta);
+        Torque_RUD = Torque * cos(theta);
+        if th2 == 0; kt2 = 0; else ;kt2 = Torque_FE / th2; end
+        if th3 == 0; kt3 = 0; else ;kt3 = Torque_RUD / th3; end
+
     end
     params.md = params.md/params.g; % Because we pass params back to ode15s solver, we have to change md to kg so we avoid accumulation of gravity multipliers in absorber mass
 end
